@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Catalog.Repositories;
 using Catalog.Entities;
+using Catalog.Dtos;
 
 namespace Catalog.Controllers{
 
@@ -18,9 +19,11 @@ namespace Catalog.Controllers{
 
         //Get -> /api/items
         [HttpGet]
-        public IEnumerable<Item> GetItems(){
+        public IEnumerable<ItemDto> GetItems(){
 
-            var items = repository.GetItems();
+            //project it to new DTO
+
+            var items = repository.GetItems().Select(item => item.AsDto());
 
             return items;
            
@@ -36,8 +39,9 @@ namespace Catalog.Controllers{
                 return NotFound();
             }
 
-            return Ok(item); //this returns null because in ItemsController() we created a new instance of InMemItemsRepository()
+            return Ok(item.AsDto()); //this returns null because in ItemsController() we created a new instance of InMemItemsRepository()
                              //this can be solved by using Dependency Injection
+                             //Dto is what we want to return to the client
         }
 
     }
