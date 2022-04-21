@@ -43,6 +43,44 @@ namespace Catalog.Controllers{
                              //this can be solved by using Dependency Injection
                              //Dto is what we want to return to the client
         }
+        //Post /items
+        [HttpPost]
+        public ActionResult<ItemDto> CreateItem(CreateItemDto itemDto){
 
+           Item item = new(){
+                Id = Guid.NewGuid(),
+                Name = itemDto.Name,
+                Price = itemDto.Price,
+                CreatedDate = DateTimeOffset.UtcNow
+              };
+              repository.CreateItem(item);
+
+              return CreatedAtAction(nameof(GetItem), new {id = item.Id}, item.AsDto());
+           
+        }
+
+        //put /items/
+        [HttpPut("{id}")]
+
+        public ActionResult UpdateItem(Guid id, UpdateItemDto itemDto){
+
+            var existingItem = repository.GetItem(id);
+
+            if(existingItem is null){
+                return NotFound();
+            }
+
+            Item updatedItem = existingItem with { //taking advantage of the record type to create a copy of the existing item and modifying two properties
+                Name = itemDto.Name,
+                Price = itemDto.Price
+            };
+            
+            repository.UpdateItem(updatedItem);
+
+            return NoContent();
+
+        }
+
+        
     }
 }

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations; //this is for data validation 
 namespace Catalog.Dtos
 {
-    public record CreateItemDto
+    public record UpdateItemDto
     {
         [Required]
        public string Name { get; init; }
